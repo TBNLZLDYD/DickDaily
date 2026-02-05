@@ -13,7 +13,25 @@ class DickDailyApp:
     def __init__(self, root):
         self.root = root
         self.root.title("撸管日历")
-        self.root.geometry("800x600")
+        
+        # 获取屏幕尺寸
+        screen_width = self.root.winfo_screenwidth()
+        screen_height = self.root.winfo_screenheight()
+        
+        # 计算窗口大小（屏幕的80%）
+        window_width = int(screen_width * 0.8)
+        window_height = int(screen_height * 0.8)
+        
+        # 确保窗口大小合理
+        window_width = max(800, min(window_width, 1200))
+        window_height = max(600, min(window_height, 900))
+        
+        # 设置窗口大小和位置（居中）
+        x = (screen_width - window_width) // 2
+        y = (screen_height - window_height) // 2
+        self.root.geometry(f"{window_width}x{window_height}+{x}+{y}")
+        
+        # 允许调整大小
         self.root.resizable(True, True)
         
         # 设置样式
@@ -285,14 +303,15 @@ class DickDailyApp:
             import winreg
             try:
                 # 获取当前可执行文件路径
-                exe_path = sys.executable
-                script_path = os.path.abspath(__file__)
-                
-                # 构建启动命令
-                if script_path.endswith('.py'):
-                    command = f'"{exe_path}" "{script_path}"'
+                if hasattr(sys, 'frozen') and sys.frozen:
+                    # 打包后的可执行文件
+                    exe_path = sys.executable
+                    command = f'"{exe_path}"'
                 else:
-                    command = f'"{script_path}"'
+                    # 直接运行Python脚本
+                    exe_path = sys.executable
+                    script_path = os.path.abspath(__file__)
+                    command = f'"{exe_path}" "{script_path}"'
                 
                 # 添加到注册表
                 key_path = r'SOFTWARE\Microsoft\Windows\CurrentVersion\Run'
